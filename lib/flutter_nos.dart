@@ -13,10 +13,6 @@ class FlutterNos {
 
   EventChannel eventChannel = const EventChannel("flutter_nos_event");
 
-  Future<String?> getPlatformVersion() {
-    return FlutterNosPlatform.instance.getPlatformVersion();
-  }
-
   Future<void> init({Map<String, Object>? config}) {
     eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
     return FlutterNosPlatform.instance.init(config);

@@ -23,10 +23,6 @@ abstract class FlutterNosPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   Future<void> init(Map<String, Object>? config) {
     throw UnimplementedError('init() has not been implemented.');
   }

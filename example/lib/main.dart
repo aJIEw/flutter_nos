@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_nos/flutter_nos.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,35 +17,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _flutterNosPlugin = FlutterNos();
+
+  final _imagePicker = ImagePicker();
+
+  final _imageCropper = ImageCropper();
+
+  String _chosenPic = '';
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterNosPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
@@ -52,12 +35,60 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('flutter_nos Plugin example'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    chooseImage();
+                  },
+                  child: const Text('选择图片')),
+              if (_chosenPic.isNotEmpty) Image.asset(_chosenPic),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                  onPressed: () {
+
+                  },
+                  child: const Text('获取')),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                  onPressed: () {
+                  },
+                  child: const Text('上传图片')),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> chooseImage() async {
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      CroppedFile? croppedFile = await _imageCropper.cropImage(
+        sourcePath: image.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: '图片裁剪',
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+            hideBottomControls: true,
+          ),
+          IOSUiSettings(
+            minimumAspectRatio: 1.0,
+            cancelButtonTitle: '取消',
+            doneButtonTitle: '完成',
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        setState(() => _chosenPic = croppedFile.path);
+      }
+    }
   }
 }

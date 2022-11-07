@@ -54,9 +54,6 @@ class FlutterNosPlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamHa
                 val imagePath: String = map["imagePath"] as String
                 uploadImage(bucketName, objName, uploadToken, imagePath)
             }
-            "getPlatformVersion" -> {
-                result.success("Android ${android.os.Build.VERSION.RELEASE}")
-            }
             else -> {
                 result.notImplemented()
             }

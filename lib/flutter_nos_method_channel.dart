@@ -10,13 +10,6 @@ class MethodChannelFlutterNos extends FlutterNosPlatform {
   final methodChannel = const MethodChannel('flutter_nos');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future<void> init(Map<String, Object>? config) async {
     methodChannel.invokeMethod('init', config);
   }

@@ -123,7 +123,7 @@
                             token: uploadToken
                             complete: ^(NOSResponseInfo *info, NSString *key, NSDictionary *resp) {
                                 NSLog(@"上传完成~~");
-                                self.eventSink(@{kNosMethod:@"onSuccess", @"message":resp.description});
+                                self.eventSink(@{kNosMethod:@"onSuccess", @"message": [NSString stringWithFormat:@"%@", resp.description]});
                             }
                             option: option];
     result(nil);

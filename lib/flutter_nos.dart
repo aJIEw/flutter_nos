@@ -7,14 +7,16 @@ typedef OnUploadResult = Function(String message);
 class FlutterNos {
   FlutterNos({this.onSuccess, this.onFailure});
 
+  /// 图片上传成功后的回调
   OnUploadResult? onSuccess;
 
+  /// 失败回调，只支持安卓
   OnUploadResult? onFailure;
 
-  EventChannel eventChannel = const EventChannel("flutter_nos_event");
+  final EventChannel _eventChannel = const EventChannel("flutter_nos_event");
 
   Future<void> init({Map<String, Object>? config}) {
-    eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
+    _eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
     return FlutterNosPlatform.instance.init(config);
   }
 
@@ -28,6 +30,7 @@ class FlutterNos {
     this.onSuccess = onSuccess;
   }
 
+  /// 目前只支持安卓
   void setOnFailure(OnUploadResult onFailure) {
     this.onFailure = onFailure;
   }
